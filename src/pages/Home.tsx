@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Button } from '@/components/ui/button'
 import {
   BookOpen,
   FlaskConical,
@@ -63,19 +64,19 @@ export default function Home() {
           practice it, build it, and debug it when it breaks.
         </p>
         <div className="mt-8 flex items-center justify-center gap-4">
-          <Link
-            to="/learning-paths"
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-white font-medium hover:bg-blue-700 transition-colors"
+          <Button
+            render={<Link to="/learning-paths" />}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 text-base"
           >
             Start Learning
-            <ArrowRight size={18} />
-          </Link>
-          <Link
-            to="/incidents"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-6 py-3 text-slate-700 font-medium hover:bg-slate-50 transition-colors"
+              <ArrowRight size={18} />
+          </Button>
+          <Button
+            render={<Link to="/incidents" />}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 text-base"
           >
             Try an Incident
-          </Link>
+          </Button>
         </div>
       </motion.section>
 
