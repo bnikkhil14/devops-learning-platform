@@ -9,7 +9,7 @@ import Dashboard from './pages/Dashboard'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/devops-learning-platform">
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
