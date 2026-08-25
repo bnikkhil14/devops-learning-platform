@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
   BookOpen,
   FlaskConical,
@@ -45,7 +46,12 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-4 pt-24 pb-16 text-center">
+      <motion.section
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="max-w-5xl mx-auto px-4 pt-24 pb-16 text-center"
+      >
         <h1 className="text-5xl sm:text-6xl font-bold text-slate-900 tracking-tight">
           DevOps<span className="text-blue-600">Forge</span>
         </h1>
@@ -71,23 +77,30 @@ export default function Home() {
             Try an Incident
           </Link>
         </div>
-      </section>
+      </motion.section>
 
       {/* Experience cards */}
       <section className="max-w-6xl mx-auto px-4 pb-24">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {experiences.map(({ to, icon: Icon, title, description }) => (
-            <Link
+          {experiences.map(({ to, icon: Icon, title, description }, index) => (
+            <motion.div
               key={to}
-              to={to}
-              className="group rounded-xl border border-slate-200 p-6 hover:border-blue-300 hover:shadow-md transition-all"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 + index * 0.08, ease: 'easeOut' }}
+              whileHover={{ y: -12, scale: 1.02, transition: { duration: 0.15, ease: 'easeOut' } }}
             >
-              <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
-                <Icon size={20} />
-              </div>
-              <h3 className="mt-4 font-semibold text-slate-900">{title}</h3>
-              <p className="mt-1 text-sm text-slate-600">{description}</p>
-            </Link>
+              <Link
+                to={to}
+                className="block group rounded-xl border border-slate-200 p-6 hover:border-blue-300 hover:shadow-md transition-all h-full"
+              >
+                <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                  <Icon size={20} />
+                </div>
+                <h3 className="mt-4 font-semibold text-slate-900">{title}</h3>
+                <p className="mt-1 text-sm text-slate-600">{description}</p>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </section>
