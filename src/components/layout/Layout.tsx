@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 
@@ -13,10 +13,18 @@ const navItems = [
 
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
+  
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="border-b border-slate-200 relative">
+      <header className="`sticky top-0 z-50 bg-white border-b transition-shadow 
+          ${scrolled ? 'border-slate-200 shadow-sm' : 'border-transparent'}`">
         <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <span className="font-bold text-lg text-slate-900">DevOpsForge</span>
 
@@ -28,8 +36,10 @@ export default function Layout() {
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `text-sm font-medium ${
-                    isActive ? 'text-blue-600' : 'text-slate-600 hover:text-slate-900'
+                  `text-sm font-medium pb-1 border-b-2 ${
+                    isActive
+                      ? 'text-blue-600 border-blue-600'
+                      : 'text-slate-600 border-transparent hover:text-slate-900'
                   }`
                 }
               >
@@ -59,8 +69,10 @@ export default function Layout() {
                   end={item.end}
                   onClick={() => setMenuOpen(false)}
                   className={({ isActive }) =>
-                    `py-2 text-sm font-medium ${
-                      isActive ? 'text-blue-600' : 'text-slate-600 hover:text-slate-900'
+                    `text-sm font-medium pb-1 border-b-2 ${
+                      isActive
+                        ? 'text-blue-600 border-blue-600'
+                        : 'text-slate-600 border-transparent hover:text-slate-900'
                     }`
                   }
                 >

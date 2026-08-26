@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import {
   BookOpen,
   FlaskConical,
@@ -44,6 +45,7 @@ const experiences = [
 ]
 
 export default function Home() {
+  usePageTitle('Home')
   return (
     <div>
       {/* Hero */}
