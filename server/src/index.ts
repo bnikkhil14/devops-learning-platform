@@ -12,7 +12,7 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(cors({origin: 'https://bnikkhil14.github.io',}));
 app.use(express.json());
 
 app.use('/api/learning-paths', learningPathsRouter);
