@@ -1,0 +1,60 @@
+// DevOpsForge — Prisma schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model LearningPath {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique
+  title          String
+  description    String
+  difficulty     Difficulty
+  estimatedHours Int
+  order          Int      @default(0)
+  labs           Lab[]
+  projects       Project[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Lab {
+  id               Int         @id @default(autoincrement())
+  slug             String      @unique
+  title            String
+  description      String
+  difficulty       Difficulty
+  estimatedMinutes Int
+  order            Int         @default(0)
+  learningPath     LearningPath? @relation(fields: [learningPathId], references: [id])
+  learningPathId   Int?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model Project {
+  id             Int         @id @default(autoincrement())
+  slug           String      @unique
+  title          String
+  description    String
+  difficulty     Difficulty
+  estimatedHours Int
+  techStack      String[]
+  order          Int         @default(0)
+  learningPath   LearningPath? @relation(fields: [learningPathId], references: [id])
+  learningPathId Int?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
