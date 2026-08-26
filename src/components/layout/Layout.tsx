@@ -23,8 +23,8 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="`sticky top-0 z-50 bg-white border-b transition-shadow 
-          ${scrolled ? 'border-slate-200 shadow-sm' : 'border-transparent'}`">
+      <header className={`sticky top-0 z-50 bg-white border-b transition-shadow 
+          ${scrolled ? 'border-slate-200 shadow-sm' : 'border-transparent'}`}>
         <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <span className="font-bold text-lg text-slate-900">DevOpsForge</span>
 
