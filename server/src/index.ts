@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import learningPathsRouter from './routes/learningPaths';
 import labsRouter from './routes/labs';
 import projectsRouter from './routes/projects';
+import authRouter from './routes/auth';
 
 dotenv.config();
 
@@ -12,12 +13,29 @@ const app = express();
 const prisma = new PrismaClient();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors({origin: 'https://bnikkhil14.github.io',}));
+const allowedOrigins = [
+  'https://bnikkhil14.github.io',
+  'http://localhost:5173',
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // allow requests with no origin (like Postman, curl, or server-to-server)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+}));
+
 app.use(express.json());
 
 app.use('/api/learning-paths', learningPathsRouter);
 app.use('/api/labs', labsRouter);
 app.use('/api/projects', projectsRouter);
+
+app.use('/api/auth', authRouter);
 
 // Basic liveness check — confirms the server is up
 app.get('/api/health', (_req: Request, res: Response) => {

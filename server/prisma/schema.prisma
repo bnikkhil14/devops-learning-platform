@@ -58,3 +58,12 @@ model Project {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // hashed, never plaintext
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

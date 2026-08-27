@@ -6,6 +6,9 @@ import Labs from './pages/Labs'
 import Projects from './pages/Projects'
 import Incidents from './pages/Incidents'
 import Dashboard from './pages/Dashboard'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import { ProtectedRoute } from './components/ProtectedRoute'
 
 export default function App() {
   return (
@@ -17,7 +20,16 @@ export default function App() {
           <Route path="labs" element={<Labs />} />
           <Route path="projects" element={<Projects />} />
           <Route path="incidents" element={<Incidents />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>
