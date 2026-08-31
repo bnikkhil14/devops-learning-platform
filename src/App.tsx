@@ -10,17 +10,30 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
+import LabDetail from './pages/LabDetail'
+import ProjectDetail from './pages/ProjectDetail'
+import LearningPathDetail from './pages/LearningPathDetail'
+
 export default function App() {
   return (
     <BrowserRouter basename="/devops-learning-platform">
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
+          
           <Route path="learning-paths" element={<LearningPaths />} />
+          <Route path="learning-paths/:slug" element={<LearningPathDetail />} />
+          
           <Route path="labs" element={<Labs />} />
+          <Route path="labs/:slug" element={<LabDetail />} />
+          
           <Route path="projects" element={<Projects />} />
+          <Route path="projects/:slug" element={<ProjectDetail />} />
+          
           <Route path="incidents" element={<Incidents />} />
+          
           <Route path="login" element={<Login />} />
+          
           <Route path="signup" element={<Signup />} />
           <Route
             path="dashboard"

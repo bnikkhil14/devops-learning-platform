@@ -60,10 +60,30 @@ model Project {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // hashed, never plaintext
+  id        String         @id @default(cuid())
+  email     String         @unique
+  password  String         // hashed, never plaintext
   name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  progress  UserProgress[]
+}
+
+model UserProgress {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  contentType ContentType
+  contentId   Int
+  completed   Boolean     @default(false)
+  completedAt DateTime?
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([userId, contentType, contentId])
+}
+
+enum ContentType {
+  LEARNING_PATH
+  LAB
+  PROJECT
 }

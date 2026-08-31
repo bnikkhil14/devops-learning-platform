@@ -6,6 +6,7 @@ import learningPathsRouter from './routes/learningPaths';
 import labsRouter from './routes/labs';
 import projectsRouter from './routes/projects';
 import authRouter from './routes/auth';
+import progressRouter from './routes/progress';
 
 dotenv.config();
 
@@ -56,3 +57,5 @@ app.get('/api/health/db', async (_req: Request, res: Response) => {
 app.listen(PORT, () => {
   console.log(`DevOpsForge API listening on port ${PORT}`);
 });
+
+app.use('/api/progress', progressRouter);

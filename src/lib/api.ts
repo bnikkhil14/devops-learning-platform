@@ -51,13 +51,26 @@ if (res.status === 401) {
 
 export const api = {
   // --- existing content routes (unchanged behavior, now auth-aware if a token exists) ---
+    
+  // --- LearningPath routes ---
   getLearningPaths: () => apiFetch<import('@/types/content').LearningPath[]>('/api/learning-paths'),
-  getLearningPath: (slug: string) =>
-    apiFetch<import('@/types/content').LearningPath>(`/api/learning-paths/${slug}`),
+  getLearningPath: (slug: string) => apiFetch<import('@/types/content').LearningPath>(`/api/learning-paths/${slug}`),
+ 
+  // --- Labs routes ---
   getLabs: () => apiFetch<import('@/types/content').Lab[]>('/api/labs'),
   getLab: (slug: string) => apiFetch<import('@/types/content').Lab>(`/api/labs/${slug}`),
+ 
+  // --- Project routes ---
   getProjects: () => apiFetch<import('@/types/content').Project[]>('/api/projects'),
   getProject: (slug: string) => apiFetch<import('@/types/content').Project>(`/api/projects/${slug}`),
+
+  // --- progress routes ---
+  getProgress: () => apiFetch<import('@/types/progress').UserProgress[]>('/api/progress'),
+  toggleProgress: (contentType: import('@/types/progress').ContentType, contentId: number) =>
+    apiFetch<import('@/types/progress').UserProgress>('/api/progress/toggle', {
+      method: 'POST',
+      body: JSON.stringify({ contentType, contentId }),
+    }),
 
   // --- new auth routes ---
   signup: (email: string, password: string, name?: string) =>

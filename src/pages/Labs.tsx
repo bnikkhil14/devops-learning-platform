@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Clock } from 'lucide-react'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api } from '@/lib/api'
@@ -31,9 +32,10 @@ export default function Labs() {
       {!loading && !error && (
         <div className="mt-8 space-y-4">
           {labs.map((lab) => (
-            <div
+            <Link
               key={lab.id}
-              className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
+              to={`/labs/${lab.slug}`}
+              className="block rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between gap-2">
                 <h2 className="text-lg font-semibold text-slate-900">{lab.title}</h2>
@@ -44,7 +46,7 @@ export default function Labs() {
                 <Clock className="h-3.5 w-3.5" />
                 {lab.estimatedMinutes} min
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

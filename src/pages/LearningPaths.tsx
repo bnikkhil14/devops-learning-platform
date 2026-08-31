@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Clock, Layers } from 'lucide-react'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api } from '@/lib/api'
@@ -33,8 +34,9 @@ export default function LearningPaths() {
       {!loading && !error && (
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
           {paths.map((path) => (
-            <div
+            <Link
               key={path.id}
+              to={`/learning-paths/${path.slug}`}
               className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between gap-2">
@@ -52,7 +54,7 @@ export default function LearningPaths() {
                   {path.labs.length} labs · {path.projects.length} projects
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
