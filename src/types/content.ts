@@ -1,5 +1,11 @@
 export type Difficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
 
+export interface LearningPathSummary {
+  id: number
+  slug: string
+  title: string
+}
+
 export interface Lab {
   id: number
   slug: string
@@ -9,6 +15,7 @@ export interface Lab {
   estimatedMinutes: number
   order: number
   learningPathId: number | null
+  learningPath: LearningPathSummary | null
 }
 
 export interface Project {
@@ -21,6 +28,7 @@ export interface Project {
   techStack: string[]
   order: number
   learningPathId: number | null
+  learningPath: LearningPathSummary | null
 }
 
 export interface LearningPath {
