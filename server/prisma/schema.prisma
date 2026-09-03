@@ -16,6 +16,13 @@ enum Difficulty {
   ADVANCED
 }
 
+enum ContentType {
+  LEARNING_PATH
+  LAB
+  PROJECT
+  INCIDENT
+}
+
 model LearningPath {
   id             Int      @id @default(autoincrement())
   slug           String   @unique
@@ -60,13 +67,14 @@ model Project {
 }
 
 model User {
-  id        String         @id @default(cuid())
-  email     String         @unique
-  password  String         // hashed, never plaintext
-  name      String?
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  progress  UserProgress[]
+  id              String         @id @default(cuid())
+  email           String         @unique
+  password        String         // hashed, never plaintext
+  name            String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  progress        UserProgress[]
+  incidentAttempts UserIncidentAttempt[]
 }
 
 model UserProgress {
@@ -82,8 +90,36 @@ model UserProgress {
   @@unique([userId, contentType, contentId])
 }
 
-enum ContentType {
-  LEARNING_PATH
-  LAB
-  PROJECT
+model Incident {
+  id           Int              @id @default(autoincrement())
+  slug         String           @unique
+  title        String
+  category     String
+  difficulty   Difficulty
+  scenarioText String
+  choices      IncidentChoice[]
+  attempts     UserIncidentAttempt[]
+  createdAt    DateTime         @default(now())
+}
+
+model IncidentChoice {
+  id           Int      @id @default(autoincrement())
+  incidentId   Int
+  incident     Incident @relation(fields: [incidentId], references: [id])
+  choiceText   String
+  isCorrect    Boolean
+  feedbackText String
+  attempts     UserIncidentAttempt[]
+}
+
+model UserIncidentAttempt {
+  id         String         @id @default(cuid())
+  userId     String
+  user       User           @relation(fields: [userId], references: [id])
+  incidentId Int
+  incident   Incident       @relation(fields: [incidentId], references: [id])
+  choiceId   Int
+  choice     IncidentChoice @relation(fields: [choiceId], references: [id])
+  isCorrect  Boolean
+  attemptedAt DateTime      @default(now())
 }

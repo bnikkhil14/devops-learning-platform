@@ -72,6 +72,15 @@ export const api = {
       body: JSON.stringify({ contentType, contentId }),
     }),
 
+  // --- Incident routes ---
+  getIncidents: () => apiFetch<import('@/types/incidents').IncidentSummary[]>('/api/incidents'),
+  getIncident: (slug: string) => apiFetch<import('@/types/incidents').IncidentDetail>(`/api/incidents/${slug}`),
+  submitIncidentAttempt: (slug: string, choiceId: number) =>
+    apiFetch<import('@/types/incidents').IncidentAttemptResult>(`/api/incidents/${slug}/attempt`, {
+      method: 'POST',
+      body: JSON.stringify({ choiceId }),
+    }),
+
   // --- new auth routes ---
   signup: (email: string, password: string, name?: string) =>
     apiFetch<import('@/types/auth').AuthResponse>('/api/auth/signup', {

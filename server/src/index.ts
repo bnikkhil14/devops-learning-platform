@@ -7,6 +7,7 @@ import labsRouter from './routes/labs';
 import projectsRouter from './routes/projects';
 import authRouter from './routes/auth';
 import progressRouter from './routes/progress';
+import incidentsRouter from './routes/incidents';
 
 dotenv.config();
 
@@ -35,7 +36,7 @@ app.use(express.json());
 app.use('/api/learning-paths', learningPathsRouter);
 app.use('/api/labs', labsRouter);
 app.use('/api/projects', projectsRouter);
-
+app.use('/api/incidents', incidentsRouter);
 app.use('/api/auth', authRouter);
 
 // Basic liveness check — confirms the server is up
