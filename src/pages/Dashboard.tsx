@@ -1,25 +1,28 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CheckCircle2, FlaskConical, Rocket } from 'lucide-react'
+import { CheckCircle2, FlaskConical, Rocket, AlertTriangle } from 'lucide-react'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api } from '@/lib/api'
 import type { Lab, Project } from '@/types/content'
 import type { UserProgress } from '@/types/progress'
+import type { IncidentSummary } from '@/types/incidents'
 
 export default function Dashboard() {
   usePageTitle('Dashboard')
 
   const [labs, setLabs] = useState<Lab[]>([])
   const [projects, setProjects] = useState<Project[]>([])
+  const [incidents, setIncidents] = useState<IncidentSummary[]>([])
   const [progress, setProgress] = useState<UserProgress[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    Promise.all([api.getLabs(), api.getProjects(), api.getProgress()])
-      .then(([labsData, projectsData, progressData]) => {
+    Promise.all([api.getLabs(), api.getProjects(), api.getIncidents(), api.getProgress()])
+      .then(([labsData, projectsData, incidentsData, progressData]) => {
         setLabs(labsData)
         setProjects(projectsData)
+        setIncidents(incidentsData)
         setProgress(progressData)
       })
       .catch(() => setError('Could not load your progress. Is the backend running?'))
@@ -32,11 +35,15 @@ export default function Dashboard() {
   const completedProjectIds = new Set(
     progress.filter((p) => p.contentType === 'PROJECT' && p.completed).map((p) => p.contentId)
   )
+  const completedIncidentIds = new Set(
+    progress.filter((p) => p.contentType === 'INCIDENT' && p.completed).map((p) => p.contentId)
+  )
 
   const completedLabs = labs.filter((lab) => completedLabIds.has(lab.id))
   const completedProjects = projects.filter((project) => completedProjectIds.has(project.id))
+  const completedIncidents = incidents.filter((incident) => completedIncidentIds.has(incident.id))
 
-  const hasAnyProgress = completedLabs.length > 0 || completedProjects.length > 0
+  const hasAnyProgress = completedLabs.length > 0 || completedProjects.length > 0 || completedIncidents.length > 0
 
   return (
     <div className="max-w-4xl mx-auto py-16 px-4">
@@ -49,7 +56,7 @@ export default function Dashboard() {
       {!loading && !error && (
         <>
           {/* Summary stats */}
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-center gap-2 text-slate-500">
                 <FlaskConical className="h-4 w-4" />
@@ -68,20 +75,33 @@ export default function Dashboard() {
                 {completedProjects.length} <span className="text-base font-normal text-slate-500">/ {projects.length} completed</span>
               </p>
             </div>
+            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center gap-2 text-slate-500">
+                <AlertTriangle className="h-4 w-4" />
+                <span className="text-sm">Incidents</span>
+              </div>
+              <p className="mt-2 text-2xl font-bold text-slate-900">
+                {completedIncidents.length} <span className="text-base font-normal text-slate-500">/ {incidents.length} solved</span>
+              </p>
+            </div>
           </div>
 
           {/* Empty state */}
           {!hasAnyProgress && (
             <div className="mt-8 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-              <p className="text-slate-600">You haven't completed any labs or projects yet.</p>
+              <p className="text-slate-600">You haven't completed any labs, projects, or incidents yet.</p>
               <p className="mt-2 text-sm text-slate-500">
                 Head over to{' '}
                 <Link to="/labs" className="text-blue-600 hover:underline">
                   Labs
-                </Link>{' '}
-                or{' '}
+                </Link>
+                ,{' '}
                 <Link to="/projects" className="text-blue-600 hover:underline">
                   Projects
+                </Link>
+                , or the{' '}
+                <Link to="/incidents" className="text-blue-600 hover:underline">
+                  Incident Simulator
                 </Link>{' '}
                 to get started.
               </p>
@@ -120,6 +140,25 @@ export default function Dashboard() {
                   >
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                     {project.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Completed incidents */}
+          {completedIncidents.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-lg font-semibold text-slate-900">Solved Incidents</h2>
+              <div className="mt-3 space-y-2">
+                {completedIncidents.map((incident) => (
+                  <Link
+                    key={incident.id}
+                    to={`/incidents/${incident.slug}`}
+                    className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 hover:bg-slate-50"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                    {incident.title}
                   </Link>
                 ))}
               </div>
