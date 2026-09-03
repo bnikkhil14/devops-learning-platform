@@ -1,4 +1,4 @@
-export type ContentType = 'LEARNING_PATH' | 'LAB' | 'PROJECT'
+export type ContentType = 'LEARNING_PATH' | 'LAB' | 'PROJECT' | 'INCIDENT'
 
 export interface UserProgress {
   id: string
