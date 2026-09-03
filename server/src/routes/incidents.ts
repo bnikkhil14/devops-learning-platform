@@ -1,14 +1,9 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { requireAuth } from '../middleware/requireAuth';
-import { Request } from 'express';
+import { requireAuth, AuthRequest } from '../middleware/requireAuth';
 
 const router = Router();
 const prisma = new PrismaClient();
-
-interface AuthRequest extends Request {
-  userId: string;
-}
 
 // GET /api/incidents — list all incidents, no auth required
 router.get('/', async (req, res) => {
@@ -59,9 +54,13 @@ router.get('/:slug', async (req, res) => {
 });
 
 // POST /api/incidents/:slug/attempt
-router.post('/:slug/attempt', requireAuth, async (req, res) => {
+router.post('/:slug/attempt', requireAuth, async (req: AuthRequest, res: Response) => {
   const { choiceId } = req.body as { choiceId?: number };
-  const userId = req.userId!;
+
+  if (!Number.isInteger(choiceId)) {
+    return res.status(400).json({ error: 'Invalid choice id' });
+  }
+  const validChoiceId = choiceId as number;
 
   try {
     const incident = await prisma.incident.findUnique({ where: { slug: req.params.slug } });
@@ -69,23 +68,19 @@ router.post('/:slug/attempt', requireAuth, async (req, res) => {
       return res.status(404).json({ error: 'Incident not found' });
     }
 
-    if (!Number.isInteger(choiceId)) {
-      return res.status(400).json({ error: 'Invalid choice id' });
-    }
-
-    const choice = await prisma.incidentChoice.findUnique({ where: { id: choiceId } });
+    const choice = await prisma.incidentChoice.findUnique({ where: { id: validChoiceId } });
     if (!choice || choice.incidentId !== incident.id) {
       return res.status(400).json({ error: 'Choice does not belong to this incident' });
     }
 
     const attempt = await prisma.userIncidentAttempt.create({
-      data: { userId, incidentId: incident.id, choiceId, isCorrect: choice.isCorrect },
+      data: { userId: req.userId!, incidentId: incident.id, choiceId: validChoiceId, isCorrect: choice.isCorrect },
     });
 
     if (choice.isCorrect) {
       await prisma.userProgress.upsert({
-        where: { userId_contentType_contentId: { userId, contentType: 'INCIDENT', contentId: incident.id } },
-        create: { userId, contentType: 'INCIDENT', contentId: incident.id, completed: true, completedAt: new Date() },
+        where: { userId_contentType_contentId: { userId: req.userId!, contentType: 'INCIDENT', contentId: incident.id } },
+        create: { userId: req.userId!, contentType: 'INCIDENT', contentId: incident.id, completed: true, completedAt: new Date() },
         update: { completed: true, completedAt: new Date() },
       });
     }
